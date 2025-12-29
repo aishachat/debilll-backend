@@ -5,12 +5,31 @@ import { PlanResponse, StrategyItem, PlanTask } from './dto/plan-response.dto';
 @Injectable()
 export class OpenAIService {
   private readonly logger = new Logger(OpenAIService.name);
-  private openai: OpenAI;
+  private openai: OpenAI | null = null;
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    // Ленивая инициализация - создаем только когда нужно
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      this.logger.warn('⚠️ OPENAI_API_KEY not found in environment variables');
+      this.logger.warn('⚠️ OpenAI service will not be available until API key is set');
+    } else {
+      this.openai = new OpenAI({
+        apiKey: apiKey,
+      });
+      this.logger.log('✅ OpenAI service initialized');
+    }
+  }
+
+  private getOpenAI(): OpenAI {
+    if (!this.openai) {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) {
+        throw new Error('OPENAI_API_KEY is not set. Please configure it in Railway Variables.');
+      }
+      this.openai = new OpenAI({ apiKey });
+    }
+    return this.openai;
   }
 
   /**
@@ -30,7 +49,7 @@ export class OpenAIService {
 
     while (attempts < maxAttempts) {
       try {
-        const completion = await this.openai.chat.completions.create({
+        const completion = await this.getOpenAI().chat.completions.create({
           model: 'gpt-4o-mini', // Используем gpt-4o-mini, который поддерживает JSON mode
           messages: [
             { role: 'system', content: systemPrompt },
@@ -84,7 +103,7 @@ export class OpenAIService {
 
           retryMessages.push({ role: 'user', content: retryPrompt });
 
-          const completion = await this.openai.chat.completions.create({
+          const completion = await this.getOpenAI().chat.completions.create({
             model: 'gpt-4o-mini', // Используем gpt-4o-mini, который поддерживает JSON mode
             messages: retryMessages,
             temperature: 0.5, // Более детерминированный ответ при retry
