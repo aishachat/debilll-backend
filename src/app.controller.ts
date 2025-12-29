@@ -5,6 +5,16 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get()
+  getRoot() {
+    return {
+      success: true,
+      message: 'Listai API is running',
+      version: '1.0.0',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   @Get('health')
   async getHealth() {
     try {
