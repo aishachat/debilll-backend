@@ -22,4 +22,13 @@ echo "   - JWT_SECRET: ${JWT_SECRET:+✅ Set}"
 echo "   - REDIS_HOST: ${REDIS_HOST:+✅ Set}"
 
 echo "🚀 Starting NestJS application..."
-exec node dist/main.js
+echo "📁 Checking dist/main.js exists..."
+if [ -f "dist/main.js" ]; then
+  echo "✅ dist/main.js found"
+  ls -la dist/main.js
+  exec node dist/main.js
+else
+  echo "❌ dist/main.js not found!"
+  ls -la dist/
+  exit 1
+fi
