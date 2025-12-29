@@ -10,6 +10,60 @@ async function bootstrap() {
     console.log('🏠 Working directory:', process.cwd());
     console.log('📁 __dirname:', __dirname);
 
+    // Helper function to strip quotes from environment variables
+    const stripQuotes = (value: string | undefined): string | undefined => {
+      if (!value) return value;
+      // Remove surrounding quotes (single or double)
+      return value.replace(/^["']|["']$/g, '');
+    };
+
+    // Clean environment variables from quotes
+    if (process.env.DATABASE_HOST) {
+      process.env.DATABASE_HOST = stripQuotes(process.env.DATABASE_HOST);
+    }
+    if (process.env.DATABASE_PORT) {
+      process.env.DATABASE_PORT = stripQuotes(process.env.DATABASE_PORT);
+    }
+    if (process.env.DATABASE_USER) {
+      process.env.DATABASE_USER = stripQuotes(process.env.DATABASE_USER);
+    }
+    if (process.env.DATABASE_PASSWORD) {
+      process.env.DATABASE_PASSWORD = stripQuotes(process.env.DATABASE_PASSWORD);
+    }
+    if (process.env.DATABASE_NAME) {
+      process.env.DATABASE_NAME = stripQuotes(process.env.DATABASE_NAME);
+    }
+    if (process.env.DATABASE_SSL) {
+      process.env.DATABASE_SSL = stripQuotes(process.env.DATABASE_SSL);
+    }
+    if (process.env.JWT_SECRET) {
+      process.env.JWT_SECRET = stripQuotes(process.env.JWT_SECRET);
+    }
+    if (process.env.JWT_REFRESH_SECRET) {
+      process.env.JWT_REFRESH_SECRET = stripQuotes(process.env.JWT_REFRESH_SECRET);
+    }
+    if (process.env.OPENAI_API_KEY) {
+      process.env.OPENAI_API_KEY = stripQuotes(process.env.OPENAI_API_KEY);
+    }
+    if (process.env.REDIS_HOST) {
+      process.env.REDIS_HOST = stripQuotes(process.env.REDIS_HOST);
+    }
+    if (process.env.REDIS_PORT) {
+      process.env.REDIS_PORT = stripQuotes(process.env.REDIS_PORT);
+    }
+    if (process.env.REDIS_PASSWORD) {
+      process.env.REDIS_PASSWORD = stripQuotes(process.env.REDIS_PASSWORD);
+    }
+    if (process.env.REDIS_TLS) {
+      process.env.REDIS_TLS = stripQuotes(process.env.REDIS_TLS);
+    }
+    if (process.env.PORT) {
+      process.env.PORT = stripQuotes(process.env.PORT);
+    }
+    if (process.env.NODE_ENV) {
+      process.env.NODE_ENV = stripQuotes(process.env.NODE_ENV);
+    }
+
     // Log environment variables (without secrets)
     console.log('🔧 Environment check:');
     console.log('   - DATABASE_HOST:', process.env.DATABASE_HOST ? `✅ Set (${process.env.DATABASE_HOST})` : '❌ Missing');
@@ -17,8 +71,13 @@ async function bootstrap() {
     console.log('   - DATABASE_USER:', process.env.DATABASE_USER ? '✅ Set' : '❌ Missing');
     console.log('   - DATABASE_PASSWORD:', process.env.DATABASE_PASSWORD ? '✅ Set' : '❌ Missing');
     console.log('   - DATABASE_NAME:', process.env.DATABASE_NAME ? `✅ Set (${process.env.DATABASE_NAME})` : '❌ Missing');
+    console.log('   - DATABASE_SSL:', process.env.DATABASE_SSL ? `✅ Set (${process.env.DATABASE_SSL})` : '❌ Missing');
     console.log('   - JWT_SECRET:', process.env.JWT_SECRET ? '✅ Set' : '❌ Missing');
+    console.log('   - JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET ? '✅ Set' : '❌ Missing');
     console.log('   - OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✅ Set' : '❌ Missing');
+    console.log('   - REDIS_HOST:', process.env.REDIS_HOST ? `✅ Set (${process.env.REDIS_HOST})` : '❌ Missing');
+    console.log('   - REDIS_PORT:', process.env.REDIS_PORT ? `✅ Set (${process.env.REDIS_PORT})` : '❌ Missing');
+    console.log('   - REDIS_TLS:', process.env.REDIS_TLS ? `✅ Set (${process.env.REDIS_TLS})` : '❌ Missing');
     console.log('   - PORT:', process.env.PORT ? `✅ Set (${process.env.PORT})` : '❌ Missing');
     console.log('   - NODE_ENV:', process.env.NODE_ENV ? `✅ Set (${process.env.NODE_ENV})` : '❌ Missing');
 
