@@ -16,21 +16,26 @@ echo "✅ Application files found"
 
 # Check environment variables
 echo "🔧 Checking environment variables:"
-echo "   - DATABASE_HOST: ${DATABASE_HOST:+✅ Set}"
-echo "   - DATABASE_PORT: ${DATABASE_PORT:+✅ Set}"
+echo "   - DATABASE_HOST: ${DATABASE_HOST:+✅ Set (${DATABASE_HOST})}"
+echo "   - DATABASE_PORT: ${DATABASE_PORT:+✅ Set (${DATABASE_PORT})}"
 echo "   - DATABASE_USER: ${DATABASE_USER:+✅ Set}"
 echo "   - DATABASE_PASSWORD: ${DATABASE_PASSWORD:+✅ Set}"
-echo "   - DATABASE_NAME: ${DATABASE_NAME:+✅ Set}"
-echo "   - DATABASE_SSL: ${DATABASE_SSL:+✅ Set}"
+echo "   - DATABASE_NAME: ${DATABASE_NAME:+✅ Set (${DATABASE_NAME})}"
+echo "   - DATABASE_SSL: ${DATABASE_SSL:+✅ Set (${DATABASE_SSL})}"
 echo "   - JWT_SECRET: ${JWT_SECRET:+✅ Set}"
 echo "   - JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:+✅ Set}"
-echo "   - REDIS_HOST: ${REDIS_HOST:+✅ Set}"
-echo "   - REDIS_PORT: ${REDIS_PORT:+✅ Set}"
+echo "   - REDIS_HOST: ${REDIS_HOST:+✅ Set (${REDIS_HOST})}"
+echo "   - REDIS_PORT: ${REDIS_PORT:+✅ Set (${REDIS_PORT})}"
 echo "   - REDIS_PASSWORD: ${REDIS_PASSWORD:+✅ Set}"
-echo "   - REDIS_TLS: ${REDIS_TLS:+✅ Set}"
+echo "   - REDIS_TLS: ${REDIS_TLS:+✅ Set (${REDIS_TLS})}"
 echo "   - OPENAI_API_KEY: ${OPENAI_API_KEY:+✅ Set}"
 echo "   - PORT: ${PORT:+✅ Set (${PORT})}"
 echo "   - NODE_ENV: ${NODE_ENV:+✅ Set (${NODE_ENV})}"
+
+# Debug: Show all environment variables (first 20)
+echo ""
+echo "🔍 Debug: First 20 environment variables:"
+env | head -20
 
 echo "🚀 Starting NestJS application..."
 echo "📁 Checking dist/main.js exists..."
