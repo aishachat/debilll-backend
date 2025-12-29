@@ -20,35 +20,49 @@ import { AppService } from './app.service';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      // Поддержка connection string или отдельных параметров
-      ...(process.env.DATABASE_URL
-        ? { 
-            url: process.env.DATABASE_URL,
-            // Явно устанавливаем SSL для connection string с sslmode
-            ssl: process.env.DATABASE_URL.includes('sslmode') 
-              ? { rejectUnauthorized: false }
-              : undefined,
-          }
-        : {
-            host: process.env.DATABASE_HOST || 'localhost',
-            port: parseInt(process.env.DATABASE_PORT || '5432'),
-            username: process.env.DATABASE_USER || 'postgres',
-            password: process.env.DATABASE_PASSWORD || 'postgres',
-            database: process.env.DATABASE_NAME || 'listai',
-            ssl: process.env.DATABASE_SSL === 'true' 
-              ? { rejectUnauthorized: false }
-              : false,
-          }),
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: process.env.NODE_ENV !== 'production', // Only in dev - создает таблицы автоматически
-      logging: process.env.NODE_ENV === 'development',
-      // Позволяем приложению запуститься даже если БД недоступна
-      retryAttempts: 3,
-      retryDelay: 3000,
-      // Не блокируем запуск приложения при ошибке подключения
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({
+        type: 'postgres',
+        // Поддержка connection string или отдельных параметров
+        ...(process.env.DATABASE_URL
+          ? {
+              url: process.env.DATABASE_URL,
+              // Явно устанавливаем SSL для connection string с sslmode
+              ssl: process.env.DATABASE_URL.includes('sslmode')
+                ? { rejectUnauthorized: false }
+                : undefined,
+            }
+          : {
+              host: process.env.DATABASE_HOST || 'localhost',
+              port: parseInt(process.env.DATABASE_PORT || '5432'),
+              username: process.env.DATABASE_USER || 'postgres',
+              password: process.env.DATABASE_PASSWORD || 'postgres',
+              database: process.env.DATABASE_NAME || 'listai',
+              ssl: process.env.DATABASE_SSL === 'true'
+                ? { rejectUnauthorized: false }
+                : false,
+            }),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: process.env.NODE_ENV !== 'production', // Only in dev - создает таблицы автоматически
+        logging: process.env.NODE_ENV === 'development',
+        // Позволяем приложению запуститься даже если БД недоступна
+        retryAttempts: 0, // Не пытаемся переподключаться
+        retryDelay: 0,
+        keepConnectionAlive: false, // Не держим соединение
+        // Не блокируем запуск приложения при ошибке подключения
+        autoLoadEntities: true,
+        // В продакшене отключаем synchronize
+        dropSchema: false,
+        // Добавляем таймауты
+        connectTimeoutMS: 5000,
+        acquireTimeoutMS: 5000,
+        // Graceful handling of connection errors
+        extra: {
+          // Handle connection errors gracefully
+          connectionTimeoutMillis: 5000,
+        },
+      }),
+      // Если БД недоступна, модуль все равно загрузится
     }),
     // Для Vercel используем Redis только если доступен, иначе отключаем очереди
     ...(process.env.REDIS_HOST && process.env.REDIS_HOST !== 'localhost' ? [BullModule.forRoot({
