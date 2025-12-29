@@ -61,6 +61,9 @@ import { AppService } from './app.service';
           // Handle connection errors gracefully
           connectionTimeoutMillis: 5000,
         },
+        // Не блокируем запуск приложения при ошибке подключения к БД
+        // Приложение запустится, но БД будет недоступна
+        // Это позволит health check работать даже без БД
       }),
       // Если БД недоступна, модуль все равно загрузится
     }),
